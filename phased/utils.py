@@ -34,11 +34,12 @@ def second_pass_render(request, content):
     for index, bit in enumerate(content.split(settings.PHASED_SECRET_DELIMITER)):
         if index % 2:
             tokens = Lexer(bit, None).tokenize()
+            context = RequestContext(request,
+                restore_csrf_token(request, unpickle_context(bit)))
         else:
-            tokens.append(Token(TOKEN_TEXT, bit))
+            tokens = [Token(TOKEN_TEXT, bit)]
+            context = None
 
-        context = RequestContext(request,
-            restore_csrf_token(request, unpickle_context(bit)))
         rendered = Parser(tokens).parse().render(context)
 
         if settings.PHASED_SECRET_DELIMITER in rendered:
