@@ -101,7 +101,7 @@ class NestedTwoPhaseTestCase(TwoPhaseTestCase):
         self.assertEqual(second_render, 'firstsecondTEST')
 
 
-class PhaseEmptyVariableTestCase(TwoPhaseTestCase):
+class PhaseEmptyVariableTestCase(PhasedTestCase):
     test_template = (
         "{% load phased_tags %}"
         "{% phased with bob %}"
@@ -169,8 +169,6 @@ class PickyStashedTestCase(StashedTestCase):
     )
 
     def test_phased(self):
-        context = Context({'test_var': 'TEST'})
-        self.assertRaises(TemplateSyntaxError, compile_string(self.test_template, None).render, context)
         context = Context({
             'test_var': 'TEST',
             'test_condition': True,
