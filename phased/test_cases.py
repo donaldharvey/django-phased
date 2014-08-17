@@ -101,6 +101,22 @@ class NestedTwoPhaseTestCase(TwoPhaseTestCase):
         self.assertEqual(second_render, 'firstsecondTEST')
 
 
+class PhaseEmptyVariableTestCase(TwoPhaseTestCase):
+    test_template = (
+        "{% load phased_tags %}"
+        "{% phased with bob %}"
+        "{% if not bob %}test{% endif %}"
+        "{% endphased %}"
+    )
+
+    def test_second_pass(self):
+        request = self.factory.get('/')
+        # Don't pass in a 'bob' variable
+        first_render = compile_string(self.test_template, None).render(Context({}))
+        second_render = second_pass_render(request, first_render)
+        self.assertEqual(second_render, 'test')
+
+
 class StashedTestCase(TwoPhaseTestCase):
     test_template = (
         "{% load phased_tags %}"
