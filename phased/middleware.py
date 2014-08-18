@@ -16,6 +16,8 @@ class PhasedRenderMiddleware(object):
         render on response.content and updates the ``Content-Length`` header
         of the response to reflect the change in size after rendering.
         """
+        if 'content-type' not in response:
+            return response
         if not response['content-type'].startswith("text/html"):
             return response
         response.content = second_pass_render(request, response.content)
