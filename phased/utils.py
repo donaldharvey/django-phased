@@ -33,15 +33,18 @@ def second_pass_render(request, content):
     result = tokens = []
     for index, bit in enumerate(content.split(settings.PHASED_SECRET_DELIMITER)):
         if index % 2:
+            # We split(), so every other index is a phased content block:
             tokens = Lexer(bit, None).tokenize()
             context = RequestContext(request,
                 restore_csrf_token(request, unpickle_context(bit)))
         else:
+            # We're not in a phased content block, so don't bother restoring context:
             tokens = [Token(TOKEN_TEXT, bit)]
             context = None
 
         rendered = Parser(tokens).parse().render(context)
 
+        # Phased blocks can contain phased blocks.
         if settings.PHASED_SECRET_DELIMITER in rendered:
             rendered = second_pass_render(request, rendered)
         result.append(rendered)
