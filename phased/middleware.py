@@ -19,7 +19,9 @@ class PhasedRenderMiddleware(object):
         if not response['content-type'].startswith("text/html"):
             return response
         response.content = second_pass_render(request, response.content)
-        response['Content-Length'] = str(len(response.content))
+        # Fix the Content-Length if it's been set.
+        if 'Content-Length' in response:
+            response['Content-Length'] = str(len(response.content))
         return response
 
 
