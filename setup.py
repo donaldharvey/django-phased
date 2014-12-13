@@ -19,7 +19,7 @@ def find_version(*parts):
 
 setup(
     name="django-phased",
-    version=find_version('phased', '__init__.py') + '-custom3',
+    version=find_version('phased', '__init__.py') + '-custom4',
     url='http://github.com/codysoyland/django-phased',
     license='BSD',
     description="Simple two-phase template rendering application useful for caching of authenticated requests.",
